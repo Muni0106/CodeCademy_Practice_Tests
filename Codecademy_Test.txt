@@ -1,28 +1,28 @@
 -- Top 25 schools
-select 
+SELECT 
 email_domain,
-count(email_domain) as Top_25
+COUNT(email_domain) AS Top_25
 FROM users
-group by email_domain
-order by Top_25 desc
-limit 25;
+GROUP BY email_domain
+ORDER BY Top_25 DESC
+LIMIT 25;
 
 -- Number of .edu learners in NY
-select
+SELECT
 city, 
-count(*) as No
-from users
-where city = "New York" and email_domain like "%.edu%";
+COUNT(*) as No
+FROM users
+WHERE city = "New York" AND email_domain LIKE "%.edu%";
 
 -- number of mobile users
-select
-count(*) as no_mobile_users
-from users 
-where mobile_app IS "mobile-user";
+SELECT
+COUNT(*) AS no_mobile_users
+FROM users 
+WHERE mobile_app IS "mobile-user";
 
 -- sign ups each hour
 SELECT 
-   strftime('%H', sign_up_at) as Time, count(strftime('%H', sign_up_at)) as count
+   strftime('%H', sign_up_at) AS Time, COUNT(strftime('%H', sign_up_at)) AS COUNT
 FROM users
 GROUP BY 1
 LIMIT 20;
@@ -30,25 +30,25 @@ LIMIT 20;
 -- select count(user_id) as count from progress;
 
 -- inner join of both tables (no duplicates)
-CREATE TABLE Joined as
-Select 
+CREATE TABLE Joined AS
+SELECT 
 b.user_id, a.email_domain, a.country, a.city
 ,b.*
 
-from users as a
-inner join progress as b on a.user_id = b.user_id
+FROM users AS a
+INNER JOIN progress AS b on a.user_id = b.user_id
 ; 
 
 -- used case statement to sum up each course column
 -- (can easily change city in where clause to fit city in question)
 -- may or may not group by city
-select
+SELECT
 city,
-sum(case when learn_cpp in ("started", "completed") then 1 else 0 end) as Learn_cpp,
-sum(case when learn_sql in ("started", "completed") then 1 else 0 end) as learn_sql,
-sum(case when learn_html in ("started", "completed") then 1 else 0 end) as learn_html,
-sum(case when learn_javascript in ("started", "completed") then 1 else 0 end) as learn_javascript
- from Joined
-where city IN ("Chicago", "New York")
-group by city
+SUM(case WHEN learn_cpp in ("started", "completed") THEN 1 else 0 end) AS Learn_cpp,
+SUM(case WHEN learn_sql in ("started", "completed") THEN 1 else 0 end) AS learn_sql,
+SUM(case WHEN learn_html in ("started", "completed") THEN 1 else 0 end) AS learn_html,
+SUM(case WHEN learn_javascript in ("started", "completed") THEN 1 else 0 end) asASlearn_javascript
+ FROM Joined
+WHERE city IN ("Chicago", "New York")
+GROUP BY city
 ;
