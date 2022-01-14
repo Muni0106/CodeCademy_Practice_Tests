@@ -1,0 +1,54 @@
+-- Top 25 schools
+select 
+email_domain,
+count(email_domain) as Top_25
+FROM users
+group by email_domain
+order by Top_25 desc
+limit 25;
+
+-- Number of .edu learners in NY
+select
+city, 
+count(*) as No
+from users
+where city = "New York" and email_domain like "%.edu%";
+
+-- number of mobile users
+select
+count(*) as no_mobile_users
+from users 
+where mobile_app IS "mobile-user";
+
+-- sign ups each hour
+SELECT 
+   strftime('%H', sign_up_at) as Time, count(strftime('%H', sign_up_at)) as count
+FROM users
+GROUP BY 1
+LIMIT 20;
+
+-- select count(user_id) as count from progress;
+
+-- inner join of both tables (no duplicates)
+CREATE TABLE Joined as
+Select 
+b.user_id, a.email_domain, a.country, a.city
+,b.*
+
+from users as a
+inner join progress as b on a.user_id = b.user_id
+; 
+
+-- used case statement to sum up each course column
+-- (can easily change city in where clause to fit city in question)
+-- may or may not group by city
+select
+city,
+sum(case when learn_cpp in ("started", "completed") then 1 else 0 end) as Learn_cpp,
+sum(case when learn_sql in ("started", "completed") then 1 else 0 end) as learn_sql,
+sum(case when learn_html in ("started", "completed") then 1 else 0 end) as learn_html,
+sum(case when learn_javascript in ("started", "completed") then 1 else 0 end) as learn_javascript
+ from Joined
+where city IN ("Chicago", "New York")
+group by city
+;
